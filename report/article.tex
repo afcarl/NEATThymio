@@ -4,6 +4,8 @@
 \documentclass{article}
 \usepackage{graphicx,amsmath}
 \usepackage[defaultmono]{droidmono}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
 
 \begin{document}
 	\maketitle
@@ -96,7 +98,6 @@
 	% parapgraph obstacle_inputs }}}
 
 	\paragraph{Fitness function} % {{{
-	\label{par:obstacle_fitness}
 	We use the following performance measure, as in \cite{heinermanevolution}:
 	$$f = \sum_{t=0}^{T}{s_{trans} (1 - s_{rot}) (1 - v_{sens})}$$
 	where:
@@ -205,6 +206,32 @@
 	% section conclusion }}}
 
 	\appendix
+	\section{Manual} % {{{
+	\label{apx:sec:manual}
+	\subsection{Installing} % {{{
+	\label{sub:installing}
+	When cloning the repository make sure to add the \texttt{{-}{-}recursive}
+	flag to include the peas submodule for NEAT.
+	For the Obstacle Avoidance task performance can be improved by using
+	calibrated sensors, described in \ref{apx:sec:calibration}. How to install
+	the visualisation server for Foraging is described in
+	\ref{apx:sub:install_server}.
+	% subsection installing }}}
+
+	\subsection{Running} % {{{
+	\label{apx:sub:running}
+	Before running an experiment, make sure that the robots are on and the IP
+	addresses are in \texttt{bots.txt}.
+	For running the Obstacle Avoidance task do:
+	\begin{verbatim}
+		./start_all.sh obstacle_avoidance.py
+	\end{verbatim}
+	For running the Foraging task do:
+	\begin{verbatim}
+		./start_all.sh foraging.py
+	\end{verbatim}
+	% subsection running }}}
+	% section manual }}}
 
 	\section{Calibration} % {{{
 	\label{apx:sec:calibration}
@@ -227,8 +254,8 @@
 	hosting server on http://localhost
 	\end{verbatim}
 	% FIXME: Add a screenshot
-	\subsection{Known Issues} % {{{
-	\label{apx:sub:known_issues}
+	\subsection{Installing} % {{{
+	\label{apx:sub:install_server}
 	For the server to function properly Bootstrap is required. Install this
 	by running \texttt{./install\_server.sh} with a working internet
 	connection.
@@ -248,7 +275,7 @@
 	\section{Logging} % {{{
 	\label{apx:sec:logging}
 	The robots locally log a lot of information about each experiment while
-	they run. This can be downloaded to \texttt{logs/<experiment
+	they run. This can be downloaded to\\\texttt{logs/<experiment
 	name>\_<timestamp>\_<git hash>.json} by running \texttt{./get\_logs.sh}.
 
 	The \texttt{parse\_log.py} script prints an overview of the mean, maximum,
