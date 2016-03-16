@@ -30,3 +30,7 @@ aread:
 
 clean:
 	rm -f ${filename}.{ps,pdf,log,aux,out,dvi,bbl,blg}
+
+mac:
+	pdflatex ${filename}.tex
+
