@@ -3,6 +3,7 @@
 % XXX: Include interest-invoking words as real-time, online, etc
 \documentclass{article}
 \usepackage{graphicx,amsmath}
+\usepackage[defaultmono]{droidmono}
 
 \begin{document}
 	\maketitle
@@ -81,17 +82,18 @@
 
 	\subsection{Obstacle Avoidance} % {{{
 	\label{sub:Obstacle Avoidance}
-	In this section we present the Obstacle Avoidance task. In this task the
-	robots are placed in the environment and have to learn how to avoid its
-	outer walls. Each robot is evaluated for a fixed period of time $T$ and its
-	performance is measured using a fitness function.
+	In the Obstacle Avoidance task a single robot is placed in the
+	2x2m environment and has to learn how to avoid its outer walls while moving
+	as much as possible. Each robot is evaluated for a fixed period of time $T$
+	and its performance is measured using a fitness function.
 
 	\paragraph{Inputs} % {{{
 	\label{par:obstacle_inputs}
-	The input vector to the Neural Network controller is coposed by some of the
-	proximity IR sensors. We use the three sensor in the front (the outermost 
-	and the central one) and the two sensors from the back. The input vector 
-	is then augmented with a bias value of $1$.
+	The input vector to the Neural Network controller is composed by some of
+	the proximity IR sensors. We use three sensor in the front (the outermost
+	and the central one) and the two sensors from the back. Each value is
+	divided by the maximum value for that sensor. The input vector is
+	then augmented with a bias value of $1$.
 	% parapgraph obstacle_inputs }}}
 
 	\paragraph{Fitness function} % {{{
@@ -202,6 +204,15 @@
 	likely to result in better fitness than random mutations.
 	% section conclusion }}}
 
+	\appendix
+
+	\section{Calibration} % {{{
+	\label{sec:Calibration}
+	Since the maximum values differ greatly between different robots and
+	sensors, \texttt{parameters.py} contains a dictionary \texttt{SENSORS\_MAX}
+	that defines the calibration for each sensor and each robot IP what the
+	maxima are.
+	% section Calibration }}}
 \bibliographystyle{abbrv}
 \bibliography{references}
 \end{document}
