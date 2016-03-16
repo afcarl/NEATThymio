@@ -13,4 +13,4 @@ for g in log['generations']:
 	all_fitnesses = [individual['stats']['fitness'] for individual in individuals]
 	print 'Max', max(all_fitnesses)
 	print 'Min', min(all_fitnesses)
-	print ''
+	print

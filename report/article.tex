@@ -207,7 +207,7 @@
 	\appendix
 
 	\section{Calibration} % {{{
-	\label{sec:Calibration}
+	\label{apx:sec:calibration}
 	Since the maximum values differ greatly between different robots and
 	sensors, \texttt{parameters.py} contains a dictionary \texttt{SENSORS\_MAX}
 	that defines the calibration for each sensor and each robot IP what the
@@ -215,7 +215,7 @@
 	% section Calibration }}}
 
 	\section{Real-time Visualisation} % {{{
-	\label{sec:Real-time Visualisation}
+	\label{apx:sec:visualisation}
 	In the foraging task it can be useful to know what the robot perceives. For
 	this reason a script was added to see the camera image after processing
 	through the web browser. It shows this for each robot in bots.txt. Usage:
@@ -228,22 +228,37 @@
 	\end{verbatim}
 	% FIXME: Add a screenshot
 	\subsection{Known Issues} % {{{
-	\label{sub:Known Issues}
-	For the server to function properly Bootstrap is required. Intstall this
+	\label{apx:sub:known_issues}
+	For the server to function properly Bootstrap is required. Install this
 	by running \texttt{./install\_server.sh} with a working internet
 	connection.
 	% subsection Known Issues }}}
 	% section Real-time Visualisation }}}
 
 	\section{Vision Optimisations} % {{{
-	\label{sec:Vision Optimisations}
+	\label{apx:sec:vision_optimisations}
 	To increase the processing speed of the camera vision, two matrices are
-	precomputed that contain the distance and angle respectively to the center
+	precomputed that contain the distance and angle respectively to the centre
 	bottom of the image for every pixel.
 	These matrices are stored in \texttt{distances.p}. This file is
-	automatically generated with \texttt{dist\_angle\_macrices.py} when
+	automatically generated with \texttt{dist\_angle\_matrices.py} when
 	\texttt{start\_all.sh} is ran for the first time.
 	% section Vision Optimisations }}}
+
+	\section{Logging} % {{{
+	\label{apx:sec:logging}
+	The robots locally log a lot of information about each experiment while
+	they run. This can be downloaded to \texttt{logs/<experiment
+	name>\_<timestamp>\_<git hash>.json} by running \texttt{./get\_logs.sh}.
+
+	The \texttt{parse\_log.py} script prints an overview of the mean, maximum,
+	and minimum fitness for each generation.
+
+	\texttt{plot\_json.py} shows a simple visualisation of the same
+	information.
+
+	% TODO: Describe exactly(?) what is logged.
+	% section logging }}}
 
 \bibliographystyle{abbrv}
 \bibliography{references}
