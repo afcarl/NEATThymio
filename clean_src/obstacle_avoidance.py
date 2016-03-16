@@ -28,6 +28,8 @@ TARGET_SPECIES = 2
 SOLVED_AT = EVALUATIONS * 2
 EXPERIMENT_NAME = 'NEAT_obstacle_avoidance'
 
+PROX_SENSOR_NO = [ 0, 2, 4, 5, 6 ]
+
 CURRENT_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 MAIN_LOG_PATH = os.path.join(CURRENT_FILE_PATH, 'log_main')
 OUTPUT_PATH = os.path.join(CURRENT_FILE_PATH, 'output')
@@ -38,7 +40,11 @@ AESL_PATH = os.path.join(CURRENT_FILE_PATH, 'asebaCommands.aesl')
 
 class ObstacleAvoidance(TaskEvaluator):
 
-    def __init__(self, thymioController, commit_sha, debug=False, experimentName=EXPERIMENT_NAME, evaluations=1000, timeStep=0.005, activationFunction='tanh', popSize=1, generations=100, solvedAt=1000):
+    def __init__(self, thymioController, commit_sha, debug=False, 
+                 experimentName=EXPERIMENT_NAME, evaluations=EVALUATIONS, 
+                 timeStep=TIME_STEP, activationFunction=ACTIVATION_FUNC, 
+                 popSize=POPSIZE, generations=GENERATIONS, solvedAt=SOLVED_AT):
+        
         TaskEvaluator.__init__(self, thymioController, commit_sha, debug, experimentName, evaluations, timeStep, activationFunction, popSize, generations, solvedAt)
         self.ctrl_thread_started = False
 
@@ -52,15 +58,17 @@ class ObstacleAvoidance(TaskEvaluator):
 
     def _step(self, evaluee, callback):
         def ok_call(psValues):
-            psValues = np.array([psValues[0], psValues[2], psValues[4], psValues[5], psValues[6], 1])
+            selectedValues = [psValues[i] for i in PROX_SENSOR_NO]
+            selectedValues.append(1)
+            net_inputs = np.array(selectedValues)
 
-            left, right = list(NeuralNetwork(evaluee).feed(psValues)[-2:])
+            left, right = list(NeuralNetwork(evaluee).feed(net_inputs)[-2:])
 
             motorspeed = { 'left': left, 'right': right }
 
             writeMotorSpeed(self.thymioController, motorspeed)
 
-            callback(self.getFitness(motorspeed, psValues))
+            callback(self.getFitness(motorspeed, net_inputs))
 
         def nok_call():
             print " Error while reading proximity sensors"
@@ -121,9 +129,15 @@ if __name__ == '__main__':
         stdev_mutate_response=.25)
     pop = NEATPopulation(genotype, popsize=POPSIZE, target_species=TARGET_SPECIES)
 
+    local_ip = sys.argv[-2]
+
     # log neat settings
     log = { 'neat': {}, 'generations': [] }
     dummy_individual = genotype()
+    log['robot'] = {
+        'ip': local_ip,
+        'sensors_used': PROX_SENSOR_NO
+    }
     log['neat'] = {
         'max_speed': MAX_MOTOR_SPEED,
         'evaluations': EVALUATIONS,
@@ -161,8 +175,7 @@ if __name__ == '__main__':
     task = ObstacleAvoidance(thymioController, commit_sha, debug, EXPERIMENT_NAME)
 
     ctrl_serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ctrl_ip = sys.argv[-2]
-    ctrl_serversocket.bind((ctrl_ip, 1337))
+    ctrl_serversocket.bind((local_ip, 1337))
     ctrl_serversocket.listen(5)
     ctrl_client = None
     def set_client():
@@ -181,7 +194,8 @@ if __name__ == '__main__':
                 'conn_genes': copied_connections,
                 'stats': deepcopy(individual.stats)
             })
-        champion_file = task.experimentName + '_{}_{}.p'.format(commit_sha, population.generation)
+        time_format = time.strftime('%Y%m%d%H%M')
+        champion_file = task.experimentName + '_{}_{}_{}.p'.format(time_format, commit_sha, population.generation)
         generation['champion_file'] = champion_file
         generation['species'] = [len(species.members) for species in population.species]
         log['generations'].append(generation)

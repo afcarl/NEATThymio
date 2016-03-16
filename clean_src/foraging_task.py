@@ -44,7 +44,11 @@ AESL_PATH = os.path.join(CURRENT_FILE_PATH, 'asebaCommands.aesl')
 
 class ForagingTask(TaskEvaluator):
 
-    def __init__(self, thymioController, commit_sha, debug=False, experimentName='NEAT_task', evaluations=1000, timeStep=0.005, activationFunction='tanh', popSize=1, generations=100, solvedAt=1000):
+    def __init__(self, thymioController, commit_sha, debug=False,
+                 experimentName=EXPERIMENT_NAME, evaluations=EVALUATIONS, 
+                 timeStep=TIME_STEP, activationFunction=ACTIVATION_FUNC, 
+                 popSize=POPSIZE, generations=GENERATIONS, solvedAt=SOLVED_AT):
+        
         TaskEvaluator.__init__(self, thymioController, commit_sha, debug, experimentName, evaluations, timeStep, activationFunction, popSize, generations, solvedAt)
         self.camera = CameraVisionVectors(False, self.logger)
         self.ctrl_thread_started = False
@@ -254,10 +258,15 @@ if __name__ == '__main__':
         feedforward=False)
     pop = NEATPopulation(genotype, popsize=POPSIZE, target_species=TARGET_SPECIES, stagnation_age=5)
 
+    local_ip = sys.argv[-2]
+
     log = { 'neat': {}, 'generations': [] }
 
     # log neat settings
     dummy_individual = genotype()
+    log['robot'] = {
+        'ip': local_ip
+    }
     log['neat'] = {
         'max_speed': MAX_MOTOR_SPEED,
         'evaluations': EVALUATIONS,
@@ -303,7 +312,7 @@ if __name__ == '__main__':
     task = ForagingTask(thymioController, commit_sha, debug, EXPERIMENT_NAME)
 
     ctrl_serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ctrl_serversocket.bind((sys.argv[-2], 1337))
+    ctrl_serversocket.bind((local_ip, 1337))
     ctrl_serversocket.listen(5)
     ctrl_client = None
     def set_client():
@@ -335,7 +344,8 @@ if __name__ == '__main__':
                 'conn_genes': copied_connections,
                 'stats': deepcopy(individual.stats)
             })
-        champion_file = task.experimentName + '_{}_{}.p'.format(commit_sha, population.generation)
+        time_format = time.strftime('%Y%m%d%H%M')
+        champion_file = task.experimentName + '_{}_{}_{}.p'.format(time_format, commit_sha, population.generation)
         generation['champion_file'] = champion_file
         generation['species'] = [len(species.members) for species in population.species]
         print generation['species']
