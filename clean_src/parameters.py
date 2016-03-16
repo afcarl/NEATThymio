@@ -2,13 +2,26 @@
 # modified by Alessandro Zonta on June 25, 2015
 import os
 import logging
+from collections import defaultdict
 
 EXPERIMENT_NAME = "WRITE_EXPERIMENT_NAME_HERE"
 starter_number = 0
 
 motorspeed = [0, 0]
 NB_DIST_SENS = 5
-SENSOR_MAX = [4000] * 5
+
+# this is dictionary of dictionary, e.g.
+# SENSORS_MAX['192.168.1.10'][2] returns 4000 by default
+# SENSORS_MAX['192.168.1.10'][2] = 3177 sets a value
+# SENSORS_MAX['192.168.1.120'] = defaultdict(lambda: 3300)
+SENSORS_MAX = defaultdict(lambda: defaultdict(lambda: 4000))
+# update me!
+SENSORS_MAX['192.168.1.82'][0] = 4000		# front left?
+SENSORS_MAX['192.168.1.82'][2] = 4000		# front centre?
+SENSORS_MAX['192.168.1.82'][4] = 4000		# front right?
+SENSORS_MAX['192.168.1.82'][5] = 4000		# back right?
+SENSORS_MAX['192.168.1.82'][6] = 4000		# back left?
+
 TIME_STEP = 0.05
 ps_value = [0.0 for x in range(NB_DIST_SENS)]
 

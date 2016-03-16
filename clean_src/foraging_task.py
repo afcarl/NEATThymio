@@ -44,12 +44,14 @@ AESL_PATH = os.path.join(CURRENT_FILE_PATH, 'asebaCommands.aesl')
 
 class ForagingTask(TaskEvaluator):
 
-    def __init__(self, thymioController, commit_sha, debug=False,
+    def __init__(self, thymioController, commit_sha, local_ip, debug=False,
                  experimentName=EXPERIMENT_NAME, evaluations=EVALUATIONS, 
                  timeStep=TIME_STEP, activationFunction=ACTIVATION_FUNC, 
                  popSize=POPSIZE, generations=GENERATIONS, solvedAt=SOLVED_AT):
         
-        TaskEvaluator.__init__(self, thymioController, commit_sha, debug, experimentName, evaluations, timeStep, activationFunction, popSize, generations, solvedAt)
+        TaskEvaluator.__init__(self, thymioController, commit_sha, local_ip, 
+                               debug, experimentName, evaluations, timeStep, 
+                               activationFunction, popSize, generations, solvedAt)
         self.camera = CameraVisionVectors(False, self.logger)
         self.ctrl_thread_started = False
         self.img_thread_started = False
@@ -309,7 +311,7 @@ if __name__ == '__main__':
 
     debug = True
     commit_sha = sys.argv[-1]
-    task = ForagingTask(thymioController, commit_sha, debug, EXPERIMENT_NAME)
+    task = ForagingTask(thymioController, commit_sha, local_ip, debug, EXPERIMENT_NAME)
 
     ctrl_serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ctrl_serversocket.bind((local_ip, 1337))

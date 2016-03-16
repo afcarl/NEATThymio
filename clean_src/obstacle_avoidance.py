@@ -40,13 +40,16 @@ AESL_PATH = os.path.join(CURRENT_FILE_PATH, 'asebaCommands.aesl')
 
 class ObstacleAvoidance(TaskEvaluator):
 
-    def __init__(self, thymioController, commit_sha, debug=False, 
+    def __init__(self, thymioController, commit_sha, local_ip, debug=False, 
                  experimentName=EXPERIMENT_NAME, evaluations=EVALUATIONS, 
                  timeStep=TIME_STEP, activationFunction=ACTIVATION_FUNC, 
                  popSize=POPSIZE, generations=GENERATIONS, solvedAt=SOLVED_AT):
         
-        TaskEvaluator.__init__(self, thymioController, commit_sha, debug, experimentName, evaluations, timeStep, activationFunction, popSize, generations, solvedAt)
+        TaskEvaluator.__init__(self, thymioController, commit_sha, local_ip, 
+                               debug, experimentName, evaluations, timeStep, 
+                               activationFunction, popSize, generations, solvedAt)
         self.ctrl_thread_started = False
+        self.sensors_max = pr.SENSORS_MAX[local_ip]
 
     def evaluate(self, evaluee):
         global ctrl_client
@@ -58,7 +61,7 @@ class ObstacleAvoidance(TaskEvaluator):
 
     def _step(self, evaluee, callback):
         def ok_call(psValues):
-            selectedValues = [psValues[i] for i in PROX_SENSOR_NO]
+            selectedValues = [psValues[ind] / self.sensors_max[ind] for ind in PROX_SENSOR_NO]
             selectedValues.append(1)
             net_inputs = np.array(selectedValues)
 
@@ -88,8 +91,8 @@ class ObstacleAvoidance(TaskEvaluator):
 
         # Calculate normalized distance to the nearest object
         sensorpenalty = 0
-        for i, sensor in enumerate(observation[:-1]):
-            distance = sensor / float(pr.SENSOR_MAX[i])
+        for sensor, i in zip(observation[:-1], PROX_SENSOR_NO):
+            distance = sensor / float(self.sensors_max[i])
             if sensorpenalty < distance:
                 sensorpenalty = distance
         if sensorpenalty > 1:
@@ -172,7 +175,7 @@ if __name__ == '__main__':
 
     debug = False
     commit_sha = sys.argv[-1]
-    task = ObstacleAvoidance(thymioController, commit_sha, debug, EXPERIMENT_NAME)
+    task = ObstacleAvoidance(thymioController, commit_sha, local_ip, debug, EXPERIMENT_NAME)
 
     ctrl_serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ctrl_serversocket.bind((local_ip, 1337))

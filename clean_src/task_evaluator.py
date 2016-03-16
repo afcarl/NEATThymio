@@ -10,7 +10,9 @@ from helpers import *
 from parameters import *
 
 class TaskEvaluator:
-    def __init__(self, thymioController, commit_sha, debug=False, experimentName='NEAT_task', evaluations=1000, timeStep=0.005, activationFunction='tanh', popSize=1, generations=100, solvedAt=1000):
+    def __init__(self, thymioController, commit_sha, local_ip, debug=False,
+                 experimentName='NEAT_task', evaluations=1000, timeStep=0.005,
+                 activationFunction='tanh', popSize=1, generations=100, solvedAt=1000):
         self.thymioController = thymioController
         self.logger = logging.getLogger('simulationLogger')
         logLevel = logging.INFO
@@ -25,6 +27,8 @@ class TaskEvaluator:
         simHandler = logging.FileHandler(logFilename)
         simHandler.setFormatter(FORMATTER)
         self.logger.addHandler(simHandler)
+
+        self.local_ip = local_ip
 
         time_format = time.strftime('%Y%m%d%H%M')
         self.jsonLogFilename = os.path.join(outputDir, experimentName + '_' + commit_sha + '_' + time_format + '.json')
