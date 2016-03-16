@@ -1,6 +1,6 @@
 \author{Andrea Jemmett, Chiel Kooijman}
 \title{Evolving Behaviour for Thymio Robots using NEAT}
-% XXX: Include interest-invoking words as real-time, online, etc
+% XXX: Include interest-invoking words as real-time, on-line, etc.
 \documentclass{article}
 \usepackage{graphicx,amsmath}
 \usepackage[defaultmono]{droidmono}
@@ -86,7 +86,6 @@
 	2x2m environment and has to learn how to avoid its outer walls while moving
 	as much as possible. Each robot is evaluated for a fixed period of time $T$
 	and its performance is measured using a fitness function.
-
 	\paragraph{Inputs} % {{{
 	\label{par:obstacle_inputs}
 	The input vector to the Neural Network controller is composed by some of
@@ -213,6 +212,28 @@
 	that defines the calibration for each sensor and each robot IP what the
 	maxima are.
 	% section Calibration }}}
+
+	\section{Real-time Visualisation} % {{{
+	\label{sec:Real-time Visualisation}
+	In the foraging task it can be useful to know what the robot perceives. For
+	this reason a script was added to see the camera image after processing
+	through the web browser. It shows this for each robot in bots.txt. Usage:
+	\begin{verbatim}
+	$ ./img-stream.py
+	hosting server on http://localhost:8080
+
+	# ./img-stream.py
+	hosting server on http://localhost
+	\end{verbatim}
+	% FIXME: Add a screenshot
+	\subsection{Known Issues} % {{{
+	\label{sub:Known Issues}
+	For the server to function properly Bootstrap is required. Intstall this
+	by running \texttt{./install\_server.sh} with a working internet
+	connection.
+	% subsection Known Issues }}}
+	% section Real-time Visualisation }}}
+
 \bibliographystyle{abbrv}
 \bibliography{references}
 \end{document}
