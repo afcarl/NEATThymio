@@ -95,7 +95,7 @@
 	and the central one) and the two sensors from the back. Each value is
 	divided by the maximum value for that sensor. The input vector is
 	then augmented with a bias value of $1$.
-	% parapgraph obstacle_inputs }}}
+	% paragraph obstacle_inputs }}}
 
 	\paragraph{Fitness function} % {{{
 	We use the following performance measure, as in \cite{heinermanevolution}:
@@ -146,26 +146,46 @@
 	\paragraph{Fitness function} %{{{
 	\label{par:foraging_fitness}
 	Each robot has a virtual energy level (which it is not aware of). At the
-	beginning of the evaluation, the energy level is set to $INITIAL\_ENERGY$.
-	Then, at each successive time step and energy delta is computed and
+	beginning of the evaluation, the energy level is set to \texttt{INITIAL\_ENERGY}.
+	Then, at each successive time step an energy delta is computed and
 	subtracted from the energy level. The energy gets decremented by a quantity
-	$ENERGY\_DECAY$ every time step and the following formula holds:
-	
+	\texttt{ENERGY\_DECAY} at every time step and the following formula holds:
 	$$
-	f=
+	\Delta e(t)=
 	\begin{cases}
-		something & ifrobothaspuck \\
-		something\_else & {otherwise}
+		\mathtt{GOAL\_REACHED\_BONUS} & \textrm{if } goal\_reached(t) \\
+		s_{penalty} + \mathtt{GOAL\_BONUS\_SCALE} (d_g(t) - d_g(t-1)) &
+		\textrm{if } d_p(t) = 0 \\
+		s_{penalty} + \mathtt{PUCK\_BONUS\_SCALE} (d_p(t) - d_p(t-1)) &
+		\textrm{otherwise}
+	\end{cases}
+	$$
+	where \texttt{GOAL\_BONUS\_SCALE}, \texttt{PUCK\_BONUS\_SCALE} and
+	\texttt{GOAL\_REACHED\_BONUS} are constants, $d_p$ is the distance of the
+	puck, $d_g$ is the distance of the goal, $goal\_reached$ is a proposition
+	that evaluates to true if the robot has brought a puck to the goal and
+	$s_{penalty}$ is a penalty component for going backwards, that is:
+	$$
+	s_{penalty}=
+	\begin{cases}
+		\frac{\mathtt{BACKWARD\_PUNISH\_SCALE}}{s_{max}} \sqrt{s_{left} s_{right}}
+		  & \textrm{if } s_{left} < 0 \wedge s_{right} < 0 \\
+		0 & \textrm{otherwise}
+	\end{cases}
+	$$
+	where $s_{right}$ and $s_{left}$ are right and left motors' speed
+	respectively and $s_{max}$ is the maximum allowed speed. We use the
+	following proposition to check whether the robot has successfully brought a puck
+	to the goal:
+	$$
+	goal\_reached(t)=
+	\begin{cases}
+		true & \textrm{if } d_g(t) \le \mathtt{MIN\_GOAL\_DIST} \wedge d_p(t) =	0 \\
+		false & \textrm{otherwise}
 	\end{cases}
 	$$
 	% paragraph foraging_fitness }}}
 
-	\begin{itemize}
-		\item inputs (dist, angle) for (puck, goal) and has\_puck
-		\item energy
-		\item fitness
-		\item foraging parameters: MIN\_GOAL\_DIST, DECAYS, MAX\_STEPS
-	\end{itemize}
 	% xXX image: picture of robot + lego contraption
 	% subsection Foraging }}}
 
@@ -173,6 +193,23 @@
 
 	\section{Experimental Setup} % {{{
 	\label{sec:setup}
+	In this section we show the values that we use in our experiments for the
+	different constants and parameters that we introduced until now.
+
+	\subsection{Obstacle Avoidance}
+\begin{table}
+	\centering
+	\begin{tabular}{l l}
+		\texttt{ACTIVATION\_FUNC} & \textbf{tanh} \\
+		Neural Network activation functions & \\
+		\texttt{POPSIZE} & \textbf{10} \\
+		Population size
+	\end{tabular}
+	\caption{Experimental Setup}
+	\label{tab:obstacle_parameters}
+\end{table}
+
+	\subsection{Foraging}
 
 	% section Experimental Setup }}}
 
