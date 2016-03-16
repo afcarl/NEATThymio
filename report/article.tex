@@ -73,8 +73,8 @@
 
 	\subsection{Environment} % {{{
 	\label{sub:Environment}
-	The robots operate in an arena of two meters by two and a half meters with
-	inner and outer walls that act as obstacles to avoid.
+	The robots operate in an arena of two by two meters with outer walls that
+	act as obstacles to avoid.
 	In the foraging task one of the corners of the arena is blue with white
 	patches to counteract white-balance issues, and there are five green pucks
 	with hook and loop fasteners sides placed in the arena.
@@ -180,7 +180,7 @@
 	
 	% section results }}}
 
-	\section{Conclusion and Further Work} % {{{
+	\section{Conclusion, Discussion, and Further Work} % {{{
 	\label{sec:conclusion}
 	Using energy helps limit evaluation time which makes evolving behaviour on
 	physical robots more viable.
@@ -188,14 +188,15 @@
 	Calculating something akin to distance and angle is possible in real time.
 	Limiting the number of input nodes makes learning faster. % TODO does it?
 
-	Due to the time it took to process the camera input, we had to decrease the
-	locomotion speed of the robot so that it had enough time to stop turning
-	once it saw the goal or the puck. With a faster processor or dedicated GPU
-	image processing time could be decreased, thus allowing us to increase the
-	maximum motor speeds, allowing us to evaluate the individuals more quickly.
-	Furthermore using more robots in a distributed way such as odNEAT
-	\cite{silva2012odneat} would decrease the time needed to evolve robots able
-	to evolve fitter robots faster.
+	Due to the time it takes to process the camera input, we had to decrease
+	the locomotion speed of the robot so that it had enough time to stop
+	turning once it saw the goal or the puck. With a faster processor or
+	dedicated GPU image processing time could be decreased, thus allowing us to
+	increase the maximum motor speeds, allowing us to evaluate the individuals
+	more quickly.
+	Furthermore using more robots in a distributed way such as
+	odNEAT \cite{silva2012odneat} would decrease the time needed to evolve
+	robots able to evolve fitter robots faster.
 
 	Alternatively, Reinforcement Learning (RL) methods such as DQN
 	\cite{mnih2013playing} may be more suitable for this type of task, as they
@@ -233,6 +234,16 @@
 	connection.
 	% subsection Known Issues }}}
 	% section Real-time Visualisation }}}
+
+	\section{Vision Optimisations} % {{{
+	\label{sec:Vision Optimisations}
+	To increase the processing speed of the camera vision, two matrices are
+	precomputed that contain the distance and angle respectively to the center
+	bottom of the image for every pixel.
+	These matrices are stored in \texttt{distances.p}. This file is
+	automatically generated with \texttt{dist\_angle\_macrices.py} when
+	\texttt{start\_all.sh} is ran for the first time.
+	% section Vision Optimisations }}}
 
 \bibliographystyle{abbrv}
 \bibliography{references}
