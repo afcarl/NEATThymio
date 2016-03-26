@@ -1,13 +1,16 @@
-#!/bin/sh
-python accept_output_file.py &
+#!/bin/bash
+
 while read line
 do
 	echo "STARTING $line"
-	if [ -n "$1" ]
-	then
-		python ./run_cmd.py $line 54321 --start --debug &
-	else
-		python ./run_cmd.py $line 54321 --start &
+
+	if [ ! -f "distances.p" ]; then
+		python dist_angle_matrices.py
 	fi
+
+	rsync -rzL --progress ./* pi@$line:~/
+
+	git_sha="$(git rev-parse --short HEAD)"
+	ssh -X pi@$line './start_one.sh' $1 $line $git_sha &
 done < ./bots.txt
 wait
