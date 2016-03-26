@@ -29,7 +29,14 @@ aread:
 	acroread ${filename}.pdf
 
 clean:
-	rm -f ${filename}.{ps,pdf,log,aux,out,dvi,bbl,blg}
+	rm -f ${filename}.ps
+	rm -f ${filename}.pdf
+	rm -f ${filename}.log
+	rm -f ${filename}.aux
+	rm -f ${filename}.out
+	rm -f ${filename}.dvi
+	rm -f ${filename}.bbl
+	rm -f ${filename}.blg
 
 mac:
 	pdflatex ${filename}.tex
